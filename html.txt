@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Елена | Веб-разработчик с бизнес-экспертизой 30+ лет</title>
+    <meta name="description" content="Создаю цифровые продукты, которые решают реальные бизнес-задачи. CRM, интернет-магазины, онлайн-школы. 30 лет опыта в управлении и учете, воплощенных в коде.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a', // Slate 900
+                            primary: '#1e293b', // Slate 800
+                            accent: '#d97706', // Amber 600 (теплый, деловой, премиальный)
+                            light: '#f8fafc', // Slate 50
+                            glass: 'rgba(255, 255, 255, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Chat Widget Styles */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 50;
+        }
+        
+        .chat-window {
+            width: 380px;
+            height: 500px;
+            transform: scale(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .chat-window.open {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #94a3b8;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+            margin: 0 2px;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 glass-panel border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-brand-dark font-bold text-xl">Е</div>
+                    <span class="font-serif text-xl font-semibold tracking-wide">Елена</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-300 hover:text-amber-400 transition-colors text-sm font-medium">Обо мне</a>
+                    <a href="#services" class="text-gray-300 hover:text-amber-400 transition-colors text-sm font-medium">Услуги</a>
+                    <a href="#cases" class="text-gray-300 hover:text-amber-400 transition-colors text-sm font-medium">Кейсы</a>
+                    <a href="#testimonials" class="text-gray-300 hover:text-amber-400 transition-colors text-sm font-medium">Отзывы</a>
+                </div>
+                <a href="#contact" class="hidden md:inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-full text-brand-dark bg-amber-500 hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20">
+                    Обсудить проект
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+            <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-amber-600/20 rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel mb-8 reveal">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                <span class="text-sm text-gray-300">Открыта для новых проектов</span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight reveal" style="transition-delay: 100ms;">
+                Код, который понимает <br>
+                <span class="gradient-text">язык вашего бизнеса</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-10 font-light reveal" style="transition-delay: 200ms;">
+                Я не просто веб-разработчик. 30+ лет в управлении, учете и коммуникациях научили меня создавать цифровые продукты, которые не просто "работают", а <span class="text-white font-medium">решают реальные бизнес-задачи</span> и приносят прибыль.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal" style="transition-delay: 300ms;">
+                <a href="#cases" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-brand-dark font-semibold rounded-full transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
+                    Смотреть кейсы <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="#contact" class="px-8 py-4 glass-panel hover:bg-white/10 text-white font-semibold rounded-full transition-all border border-white/20 flex items-center justify-center gap-2">
+                    Бесплатная консультация
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-10 border-t border-white/10 reveal" style="transition-delay: 400ms;">
+                <div>
+                    <div class="text-3xl font-bold text-amber-400">30+</div>
+                    <div class="text-sm text-gray-400 mt-1">Лет бизнес-опыта</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-amber-400">100%</div>
+                    <div class="text-sm text-gray-400 mt-1">Понимание процессов</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-amber-400">4</div>
+                    <div class="text-sm text-gray-400 mt-1">Ключевых направления</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-amber-400">24/7</div>
+                    <div class="text-sm text-gray-400 mt-1">Поддержка продуктов</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-brand-primary relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="text-amber-400 font-medium mb-2 tracking-wider uppercase text-sm">Обо мне</h2>
+                    <h3 class="text-4xl font-serif font-bold mb-6">От технолога общепита до архитектора цифровых решений</h3>
+                    <div class="space-y-4 text-gray-300 leading-relaxed">
+                        <p>
+                            Мой путь в IT нетипичен, и именно это делает меня ценным партнером для вашего бизнеса. Прежде чем написать первую строку кода, я провела <strong>более 30 лет</strong> "в полях": управляла процессами, строила учет, развивала сетевой маркетинг и осваивала SMM.
+                        </p>
+                        <p>
+                            Я знаю, как болит "не тот отчет", как теряются лиды из-за неудобной корзины и почему сотрудники саботируют сложные CRM. 
+                        </p>
+                        <p class="text-white font-medium border-l-4 border-amber-500 pl-4 italic">
+                            "Я создаю не просто сайты. Я создаю цифровые отражения эффективных бизнес-процессов, где каждая кнопка и каждая роль продуманы с точки зрения реальной пользы."
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <span class="px-4 py-2 rounded-lg bg-brand-dark border border-white/10 text-sm text-gray-300">Управление</span>
+                        <span class="px-4 py-2 rounded-lg bg-brand-dark border border-white/10 text-sm text-gray-300">Бухгалтерский учет</span>
+                        <span class="px-4 py-2 rounded-lg bg-brand-dark border border-white/10 text-sm text-gray-300">SMM & Коммуникации</span>
+                        <span class="px-4 py-2 rounded-lg bg-brand-dark border border-white/10 text-sm text-gray-300">Full-stack разработка</span>
+                    </div>
+                </div>
+                <div class="relative reveal">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-amber-500 to-blue-600 rounded-2xl blur-2xl opacity-20"></div>
+                    <div class="relative glass-panel rounded-2xl p-8 border border-white/10">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <i class="fa-solid fa-chart-line text-3xl text-amber-400 mb-3"></i>
+                                <h4 class="font-semibold mb-1">Фокус на ROI</h4>
+                                <p class="text-xs text-gray-400">Каждое решение окупается</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <i class="fa-solid fa-users-gear text-3xl text-amber-400 mb-3"></i>
+                                <h4 class="font-semibold mb-1">Ролевая модель</h4>
+                                <p class="text-xs text-gray-400">Понимаю потребности всех</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <i class="fa-solid fa-file-invoice text-3xl text-amber-400 mb-3"></i>
+                                <h4 class="font-semibold mb-1">Точный учет</h4>
+                                <p class="text-xs text-gray-400">Никаких потерь в данных</p>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-white/5">
+                                <i class="fa-solid fa-robot text-3xl text-amber-400 mb-3"></i>
+                                <h4 class="font-semibold mb-1">AI-интеграции</h4>
+                                <p class="text-xs text-gray-400">Автоматизация рутины</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-amber-400 font-medium mb-2 tracking-wider uppercase text-sm">Специализация</h2>
+                <h3 class="text-4xl font-serif font-bold">Цифровые продукты под ключ</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-amber-500/50 transition-all duration-300 group reveal">
+                    <div class="w-14 h-14 rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fa-solid fa-cart-shopping text-2xl text-amber-400"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Интернет-магазины</h4>
+                    <p class="text-gray-400 text-sm mb-4">Полноценная экосистема: корзина, управление заказами, синхронизация остатков. Гибкая настройка под юр. и физ. лица.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Интеграция с 1С/МойСклад</li>
+                        <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Сложная логистика и скидки</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-amber-500/50 transition-all duration-300 group reveal" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fa-solid fa-graduation-cap text-2xl text-amber-400"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Онлайн-школы и LMS</h4>
+                    <p class="text-gray-400 text-sm mb-4">Платформы с уроками, тестами и отслеживанием прогресса. Личные кабинеты с четким разделением прав доступа.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Роли: куратор, ученик, родитель</li>
+                        <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Геймификация и аналитика</li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-amber-500/50 transition-all duration-300 group reveal" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fa-solid fa-list-check text-2xl text-amber-400"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Планеры и Task-трекеры</h4>
+                    <p class="text-gray-400 text-sm mb-4">Корпоративные и личные планировщики задач с умными уведомлениями, дедлайнами и админ-панелью для контроля.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Push и Email уведомления</li>
+                        <li><i class="fa-solid fa-check text-amber-500 mr-2"></i>Дашборды для руководства</li>
+                    </ul>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-amber-500/50 transition-all duration-300 group reveal lg:col-span-2">
+                    <div class="w-14 h-14 rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <i class="fa-solid fa-file-invoice-dollar text-2xl text-amber-400"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Финансовый учет и аналитика</h4>
+                    <p class="text-gray-400 text-sm mb-4">Автоматизация рутинного учета. Преобразование неструктурированных данных (PDF, чеки) в наглядную аналитику и прогнозы. Идеально для семейного бюджета или малого бизнеса.</p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-amber-500/50 transition-all duration-300 group reveal lg:col-span-1 flex flex-col justify-center items-center text-center border-dashed border-2 border-white/10">
+                    <h4 class="text-xl font-bold mb-3">Нужно что-то уникальное?</h4>
+                    <p class="text-gray-400 text-sm mb-6">Опишите вашу задачу, и я предложу архитектурное решение.</p>
+                    <a href="#contact" class="text-amber-400 font-semibold hover:text-amber-300 flex items-center gap-2">
+                        Обсудить проект <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cases & Stories Section -->
+    <section id="cases" class="py-24 bg-brand-primary relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-amber-900/10 to-transparent pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-amber-400 font-medium mb-2 tracking-wider uppercase text-sm">Портфолио</h2>
+                <h3 class="text-4xl font-serif font-bold mb-4">Истории и кейсы</h3>
+                <p class="text-gray-400 max-w-2xl mx-auto">За каждой технологией стоит реальная бизнес-проблема. Нажмите на кейс, чтобы увидеть путь от хаоса к системному результату.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Case 1 -->
+                <div class="group relative rounded-2xl overflow-hidden cursor-pointer reveal" onclick="openModal('case1')">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&q=80&w=800" alt="CRM" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60">
+                    <div class="relative z-20 p-8 h-full flex flex-col justify-end min-h-[350px]">
+                        <div class="flex gap-2 mb-3">
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full border border-amber-500/30">Онлайн-школа</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full border border-blue-500/30">AI</span>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-2 group-hover:text-amber-400 transition-colors">CRM с ИИ-куратором и ролевой моделью</h4>
+                        <p class="text-gray-300 text-sm mb-4 line-clamp-2">Внедрение системы, где куратор, ученик, менеджер и родитель видят только нужные данные. ИИ-помощник снизил нагрузку на методистов на 40%.</p>
+                        <span class="text-amber-400 font-medium text-sm flex items-center gap-2">Подробнее о пути к результату <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="group relative rounded-2xl overflow-hidden cursor-pointer reveal" style="transition-delay: 100ms;" onclick="openModal('case2')">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800" alt="Finance" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60">
+                    <div class="relative z-20 p-8 h-full flex flex-col justify-end min-h-[350px]">
+                        <div class="flex gap-2 mb-3">
+                            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30">Финтех</span>
+                            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full border border-purple-500/30">Парсинг</span>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Семейный бюджет: PDF → Аналитика → Прогноз</h4>
+                        <p class="text-gray-300 text-sm mb-4 line-clamp-2">Автоматический парсинг банковских выписок и чеков из PDF. Мгновенное построение графиков и прогнозирование остатка на месяц.</p>
+                        <span class="text-amber-400 font-medium text-sm flex items-center gap-2">Подробнее о пути к результату <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                    </div>
+                </div>
+
+                <!-- Case 3 -->
+                <div class="group relative rounded-2xl overflow-hidden cursor-pointer reveal" style="transition-delay: 200ms;" onclick="openModal('case3')">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=800" alt="E-commerce" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60">
+                    <div class="relative z-20 p-8 h-full flex flex-col justify-end min-h-[350px]">
+                        <div class="flex gap-2 mb-3">
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full border border-amber-500/30">E-commerce</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full border border-blue-500/30">AI-продавец</span>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Интернет-магазин с ИИ-продавцом</h4>
+                        <p class="text-gray-300 text-sm mb-4 line-clamp-2">Мощная админ-панель для управления остатками + чат-бот, который консультирует по характеристикам товаров и доводит до покупки, имитируя лучшего менеджера.</p>
+                        <span class="text-amber-400 font-medium text-sm flex items-center gap-2">Подробнее о пути к результату <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                    </div>
+                </div>
+
+                <!-- Case 4 -->
+                <div class="group relative rounded-2xl overflow-hidden cursor-pointer reveal" style="transition-delay: 300ms;" onclick="openModal('case4')">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800" alt="Planner" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60">
+                    <div class="relative z-20 p-8 h-full flex flex-col justify-end min-h-[350px]">
+                        <div class="flex gap-2 mb-3">
+                            <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-full border border-red-500/30">Малый бизнес</span>
+                            <span class="px-3 py-1 bg-gray-500/20 text-gray-400 text-xs rounded-full border border-gray-500/30">Task-менеджер</span>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Планер задач с админ-панелью</h4>
+                        <p class="text-gray-300 text-sm mb-4 line-clamp-2">Система для малого бизнеса, исключающая "я забыл" и "я не видел". Жесткие дедлайны, уведомления в Telegram и прозрачная админка для владельца.</p>
+                        <span class="text-amber-400 font-medium text-sm flex items-center gap-2">Подробнее о пути к результату <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-24 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-amber-400 font-medium mb-2 tracking-wider uppercase text-sm">Отзывы</h2>
+                <h3 class="text-4xl font-serif font-bold">Что говорят клиенты</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-panel p-8 rounded-2xl reveal">
+                    <div class="flex text-amber-400 mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"Елена уникальна тем, что ей не нужно объяснять, что такое 'маржинальность' или 'воронка продаж'. Она сама это прожила. CRM, которую она нам сделала, работает как швейцарские часы."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center font-bold">А</div>
+                        <div>
+                            <div class="font-semibold">Алексей В.</div>
+                            <div class="text-sm text-gray-500">Основатель онлайн-школы</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 100ms;">
+                    <div class="flex text-amber-400 mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"Функция парсинга PDF в моем финансовом планере сэкономила мне часы ручной работы. Елена предложила решение, о котором я даже не думал, но которое оказалось критически важным."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center font-bold">М</div>
+                        <div>
+                            <div class="font-semibold">Марина С.</div>
+                            <div class="text-sm text-gray-500">Финансовый консультант</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 200ms;">
+                    <div class="flex text-amber-400 mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 italic">"Интернет-магазин с ИИ-продавцом увеличил нашу конверсию на 25% в первый же месяц. Это не просто код, это настоящий бизнес-инструмент."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center font-bold">Д</div>
+                        <div>
+                            <div class="font-semibold">Дмитрий К.</div>
+                            <div class="text-sm text-gray-500">Владелец магазина электроники</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-brand-primary relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel rounded-3xl p-8 md:p-12 border border-amber-500/20 shadow-2xl shadow-amber-900/20 reveal">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Готовы обсудить ваш проект?</h2>
+                    <p class="text-gray-400">Оставьте заявку на бесплатную 30-минутную консультацию. Я проанализирую вашу задачу и предложу оптимальное технологическое решение.</p>
+                </div>
+
+                <form class="space-y-6" onsubmit="event.preventDefault(); alert('Спасибо! Заявка отправлена. Елена свяжется с вами в ближайшее время.');">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Ваше имя</label>
+                            <input type="text" required class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors" placeholder="Иван Иванов">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Телефон или Telegram</label>
+                            <input type="text" required class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors" placeholder="+7 (999) 000-00-00">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Кратко о задаче</label>
+                        <select class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors mb-3">
+                            <option>Интернет-магазин</option>
+                            <option>CRM / Онлайн-школа</option>
+                            <option>Финансовый учет / Планер</option>
+                            <option>Другое (опишу ниже)</option>
+                        </select>
+                        <textarea rows="4" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors" placeholder="Опишите вашу бизнес-задачу или проблему..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-brand-dark font-bold py-4 rounded-xl transition-all shadow-lg shadow-amber-500/25 text-lg">
+                        Получить консультацию
+                    </button>
+                    <p class="text-center text-xs text-gray-500 mt-4">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark border-t border-white/10 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-brand-dark font-bold text-sm">Е</div>
+                <span class="font-serif text-lg font-semibold">Елена</span>
+            </div>
+            <div class="text-gray-500 text-sm">
+                © 2026 Все права защищены. Цифровые продукты с бизнес-экспертизой.
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-amber-500 hover:text-brand-dark transition-all"><i class="fa-brands fa-telegram"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-amber-500 hover:text-brand-dark transition-all"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-amber-500 hover:text-brand-dark transition-all"><i class="fa-brands fa-vk"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals for Cases -->
+    <div id="modal-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeModal()">
+        <!-- Case 1 Modal -->
+        <div id="modal-case1" class="modal-content hidden bg-brand-primary border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-amber-400 text-sm font-bold uppercase tracking-wider">Кейс 1</span>
+                        <h3 class="text-2xl font-bold mt-1">CRM для онлайн-школы с ролями и ИИ-куратором</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                </div>
+                
+                <div class="space-y-6 text-gray-300">
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-red-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Проблема (Точка А)</h4>
+                        <p class="text-sm">Хаос в коммуникациях: менеджеры видели данные учеников, кураторы не могли быстро проверить домашние задания, родители не понимали прогресс. Ручная проверка ДЗ отнимала 60% времени кураторов.</p>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-amber-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-route mr-2"></i>Путь к результату (Решение)</h4>
+                        <ul class="text-sm space-y-2 list-disc list-inside">
+                            <li>Разработана строгая ролевая модель: <strong>Менеджер</strong> (продажи), <strong>Куратор</strong> (проверка), <strong>Ученик</strong> (обучение), <strong>Родитель</strong> (наблюдение).</li>
+                            <li>Внедрен ИИ-модуль для первичной проверки тестов и ответов на частые вопросы, разгружающий куратора.</li>
+                            <li>Создан единый дашборд с метриками успеваемости.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-green-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-trophy mr-2"></i>Результат (Точка Б)</h4>
+                        <p class="text-sm">Время на проверку ДЗ сократилось на <strong>40%</strong>. Конверсия из пробного урока в покупку выросла на 15% благодаря прозрачности для родителей. Система масштабируется без потери качества.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case 2 Modal -->
+        <div id="modal-case2" class="modal-content hidden bg-brand-primary border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-amber-400 text-sm font-bold uppercase tracking-wider">Кейс 2</span>
+                        <h3 class="text-2xl font-bold mt-1">Финансовый калькулятор с автопарсингом PDF</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                </div>
+                
+                <div class="space-y-6 text-gray-300">
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-red-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Проблема</h4>
+                        <p class="text-sm">Клиент тратил по 3-4 часа в неделю на ручной перенос данных из банковских PDF-выписок и фото чеков в Excel для анализа семейного бюджета. Ошибки при вводе искажали прогнозы.</p>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-amber-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-route mr-2"></i>Путь к результату</h4>
+                        <ul class="text-sm space-y-2 list-disc list-inside">
+                            <li>Разработан алгоритм автоматического распознавания текста (OCR) для специфических форматов банковских выписок.</li>
+                            <li>Создана система категоризации трат на основе ключевых слов с возможностью ручной корректировки.</li>
+                            <li>Внедрен модуль прогнозирования остатка на конец месяца на основе исторических данных.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-green-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-trophy mr-2"></i>Результат</h4>
+                        <p class="text-sm">Время на ведение учета сократилось до <strong>15 минут в неделю</strong>. Точность прогнозов бюджета достигла 92%. Клиент получил полный контроль над финансами без рутины.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case 3 Modal -->
+        <div id="modal-case3" class="modal-content hidden bg-brand-primary border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-amber-400 text-sm font-bold uppercase tracking-wider">Кейс 3</span>
+                        <h3 class="text-2xl font-bold mt-1">Интернет-магазин с админ-панелью и ИИ-продавцом</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                </div>
+                
+                <div class="space-y-6 text-gray-300">
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-red-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Проблема</h4>
+                        <p class="text-sm">Высокий процент брошенных корзин (70%). Менеджеры не успевали отвечать на простые вопросы о характеристиках товаров в чате, особенно в вечернее время и выходные.</p>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-amber-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-route mr-2"></i>Путь к результату</h4>
+                        <ul class="text-sm space-y-2 list-disc list-inside">
+                            <li>Создана гибкая админ-панель для управления остатками в реальном времени (интеграция с поставщиками).</li>
+                            <li>Обучен ИИ-ассистент на базе каталога товаров и FAQ, который ведет диалог, рекомендует товары и сам добавляет их в корзину по просьбе клиента.</li>
+                            <li>Настроены триггерные письма для возврата брошенных корзин.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-green-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-trophy mr-2"></i>Результат</h4>
+                        <p class="text-sm">Конверсия в покупку выросла на <strong>25%</strong>. ИИ-продавец обрабатывает 80% входящих вопросов без участия человека, работая 24/7. Администраторы занимаются только сложными заказами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case 4 Modal -->
+        <div id="modal-case4" class="modal-content hidden bg-brand-primary border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-amber-400 text-sm font-bold uppercase tracking-wider">Кейс 4</span>
+                        <h3 class="text-2xl font-bold mt-1">Планер задач с админ-панелью для малого бизнеса</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                </div>
+                
+                <div class="space-y-6 text-gray-300">
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-red-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Проблема</h4>
+                        <p class="text-sm">В небольшой компании задачи ставились в мессенджерах, терялись, дедлайны срывались. Владелец бизнеса не имел прозрачной картины загрузки сотрудников и статуса проектов.</p>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-amber-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-route mr-2"></i>Путь к результату</h4>
+                        <ul class="text-sm space-y-2 list-disc list-inside">
+                            <li>Разработан кастомный планер с иерархией: Проект → Задача → Подзадача.</li>
+                            <li>Внедрена система жестких уведомлений (внутри системы + Telegram-бот) за 24 часа и за 1 час до дедлайна.</li>
+                            <li>Создана админ-панель для владельца с диаграммой Ганта и отчетом по эффективности каждого сотрудника.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border-l-4 border-green-500">
+                        <h4 class="font-bold text-white mb-1"><i class="fa-solid fa-trophy mr-2"></i>Результат</h4>
+                        <p class="text-sm">Срыв дедлайнов сократился на <strong>85%</strong>. Владелец бизнеса тратит 10 минут в день на сверку статусов вместо часовых летучек. Команда работает в едином информационном поле.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Consultant "Anna" Widget -->
+    <div class="chat-widget">
+        <!-- Chat Window -->
+        <div id="chat-window" class="chat-window glass-panel rounded-2xl flex flex-col overflow-hidden border border-amber-500/30 shadow-2xl shadow-black/50">
+            <!-- Header -->
+            <div class="bg-brand-primary p-4 border-b border-white/10 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-brand-dark font-bold">А</div>
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-brand-primary rounded-full"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Анна</h4>
+                        <p class="text-xs text-green-400">Онлайн-консультант</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-down"></i></button>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-brand-dark/50">
+                <!-- Messages will be injected here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-3 bg-brand-primary border-t border-white/10">
+                <form id="chat-form" class="flex gap-2" onsubmit="handleChatSubmit(event)">
+                    <input type="text" id="chat-input" placeholder="Напишите сообщение..." class="flex-1 bg-brand-dark border border-white/10 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <button type="submit" class="w-9 h-9 rounded-full bg-amber-500 hover:bg-amber-400 text-brand-dark flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <button id="chat-toggle-btn" onclick="toggleChat()" class="w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-400 text-brand-dark shadow-lg shadow-amber-500/30 flex items-center justify-center text-2xl transition-all animate-float relative">
+            <i class="fa-solid fa-comments"></i>
+            <span id="chat-notification" class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-brand-dark hidden"></span>
+        </button>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Scroll Reveal Animation ---
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // --- Modal Logic ---
+        function openModal(caseId) {
+            const overlay = document.getElementById('modal-overlay');
+            const modal = document.getElementById(`modal-${caseId}`);
+            
+            // Hide all modals first
+            document.querySelectorAll('.modal-content').forEach(m => m.classList.add('hidden'));
+            
+            overlay.classList.remove('hidden');
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('scale-95');
+                    modal.classList.add('scale-100');
+                }, 10);
+            }, 10);
+            
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const modals = document.querySelectorAll('.modal-content');
+            
+            overlay.classList.add('opacity-0');
+            modals.forEach(m => {
+                m.classList.remove('scale-100');
+                m.classList.add('scale-95');
+            });
+            
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                modals.forEach(m => m.classList.add('hidden'));
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // --- AI Consultant "Anna" Logic ---
+        let isChatOpen = false;
+        let hasGreeted = false;
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chat-window');
+            const notification = document.getElementById('chat-notification');
+            isChatOpen = !isChatOpen;
+            
+            if (isChatOpen) {
+                chatWindow.classList.add('open');
+                notification.classList.add('hidden');
+                if (!hasGreeted) {
+                    setTimeout(() => {
+                        addMessage('anna', 'Здравствуйте! Я Анна, ИИ-консультант Елены. 🤖\n\nЯ проанализировала все материалы сайта и готова помочь. Чем я могу вам помочь? Вы можете спросить о:\n• Стоимости и сроках\n• Конкретных кейсах (CRM, магазины, планеры)\n• Как оставить заявку');
+                        hasGreeted = true;
+                    }, 500);
+                }
+            } else {
+                chatWindow.classList.remove('open');
+            }
+        }
+
+        // Auto-open after 10 seconds
+        setTimeout(() => {
+            if (!isChatOpen) {
+                document.getElementById('chat-notification').classList.remove('hidden');
+            }
+        }, 10000);
+
+        function addMessage(sender, text) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            
+            if (sender === 'anna') {
+                div.className = 'flex gap-3';
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-brand-dark font-bold text-xs">А</div>
+                    <div class="bg-white/10 rounded-2xl rounded-tl-none px-4 py-3 text-sm text-gray-200 max-w-[80%] leading-relaxed whitespace-pre-line">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                div.className = 'flex gap-3 justify-end';
+                div.innerHTML = `
+                    <div class="bg-amber-600 rounded-2xl rounded-tr-none px-4 py-3 text-sm text-white max-w-[80%] leading-relaxed">
+                        ${text}
+                    </div>
+                `;
+            }
+            
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTyping() {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            div.className = 'flex gap-3';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-brand-dark font-bold text-xs">А</div>
+                <div class="bg-white/10 rounded-2xl rounded-tl-none px-4 py-3 flex items-center gap-1">
+                    <div class="typing-indicator"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTyping() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage('user', text);
+            input.value = '';
+            
+            showTyping();
+
+            // Simulate AI thinking and response based on keywords
+            setTimeout(() => {
+                removeTyping();
+                const lowerText = text.toLowerCase();
+                let response = '';
+
+                if (lowerText.includes('цен') || lowerText.includes('стоим') || lowerText.includes('дорого') || lowerText.includes('бюджет')) {
+                    response = 'Стоимость зависит от сложности задачи. Например, простой лендинг — от 30 000 ₽, CRM-система или интернет-магазин — от 80 000 ₽. \n\nЧтобы получить точную оценку, рекомендую заполнить форму в разделе <a href="#contact" onclick="toggleChat()" class="text-amber-400 underline">"Оставить заявку"</a>. Это бесплатно!';
+                } 
+                else if (lowerText.includes('кейс') || lowerText.includes('пример') || lowerText.includes('работ')) {
+                    response = 'У нас есть 4 детальных кейса:\n1. CRM для онлайн-школы с ИИ\n2. Финансовый учет с парсингом PDF\n3. Интернет-магазин с ИИ-продавцом\n4. Планер задач для бизнеса.\n\nНажмите на любой из них в разделе <a href="#cases" onclick="toggleChat()" class="text-amber-400 underline">"Кейсы и истории"</a>, чтобы увидеть путь к результату!';
+                }
+                else if (lowerText.includes('школ') || lowerText.includes('crm') || lowerText.includes('рол')) {
+                    response = 'Это мой профильный кейс! Я разработала CRM с четким разделением прав (менеджер, куратор, ученик, родитель) и внедрила ИИ-куратора для разгрузки персонала. \n\nПодробности в <a href="#" onclick="toggleChat(); openModal(\'case1\')" class="text-amber-400 underline">Кейсе №1</a>.';
+                }
+                else if (lowerText.includes('магазин') || lowerText.includes('продаж')) {
+                    response = 'Я создаю интернет-магазины с мощной админ-панелью и интеграцией ИИ-продавца, который консультирует клиентов 24/7 и повышает конверсию. \n\nПосмотрите детали в <a href="#" onclick="toggleChat(); openModal(\'case3\')" class="text-amber-400 underline">Кейсе №3</a>.';
+                }
+                else if (lowerText.includes('бюджет') || lowerText.includes('pdf') || lowerText.includes('финанс')) {
+                    response = 'Да, я реализую системы автоматического финансового учета, включая парсинг данных из PDF-выписок и чеков с построением прогнозов. \n\nУзнайте больше в <a href="#" onclick="toggleChat(); openModal(\'case2\')" class="text-amber-400 underline">Кейсе №2</a>.';
+                }
+                else if (lowerText.includes('задач') || lowerText.includes('планер') || lowerText.includes('бизнес')) {
+                    response = 'Для малого бизнеса я создаю планеры с жесткой системой уведомлений и админ-панелью для контроля дедлайнов. Это исключает потерю задач. \n\nДетали в <a href="#" onclick="toggleChat(); openModal(\'case4\')" class="text-amber-400 underline">Кейсе №4</a>.';
+                }
+                else if (lowerText.includes('отзыв') || lowerText.includes('кто')) {
+                    response = 'Елена — веб-разработчик с 30-летним бэкграундом в управлении и учете. Это позволяет создавать не просто код, а работающие бизнес-инструменты. Почитайте, что говорят клиенты в разделе <a href="#testimonials" onclick="toggleChat()" class="text-amber-400 underline">"Отзывы"</a>.';
+                }
+                else {
+                    response = 'Спасибо за ваш вопрос! Чтобы дать максимально точный ответ, мне нужно немного больше контекста. \n\nВы можете описать задачу здесь, или мы можем перейти к бесплатной консультации с Еленой. Заполните форму в разделе <a href="#contact" onclick="toggleChat()" class="text-amber-400 underline">"Контакты"</a>, и она свяжется с вами в течение дня!';
+                }
+
+                addMessage('anna', response);
+            }, 1500); // 1.5s delay for realism
+        }
+    </script>
+</body>
+</html>
